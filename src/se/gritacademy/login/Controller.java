@@ -55,8 +55,6 @@ public class Controller implements Initializable {
         final String PASSWORD_PATTERN = "(?=^.{8}$)(?=(.*\\d){2})(?=.*[a-z].*[a-z])(?=.*[A-Z].*[A-Z])(?=.*[!@#$%^&+=])(?!.*[\\s])^.*";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(passWord.getText());
-        System.out.println(passWord.getText());
-        System.out.println(matcher.matches());
         return matcher.matches();
 
     }
@@ -65,7 +63,9 @@ public class Controller implements Initializable {
     public void loginValidation() {
 
         submit.setOnAction(e -> {
+            // Doing a simple System.out just to show true/false
             System.out.println(isEmailValidSecond());
+
             if (passWord.getText() != null && email.getText() != null) {
                 if (isPassWordValid() && isEmailValid().get()) {
                     message.setText("Login Successful!");
