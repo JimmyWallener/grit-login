@@ -11,7 +11,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,24 +34,22 @@ public class Controller implements Initializable {
 
     // Checking if email address is correct directly with focusedProperty. AtomicBoolean updates state in response.
     // Uses regex to sort through.
-    public AtomicBoolean isEmailValid() {
-        AtomicBoolean isCorrectEmail = new AtomicBoolean(true);
+    public void isEmailValid() {
+
         email.focusedProperty().addListener((arg, oldValue, newValue) -> {
             if (!email.getText().matches(EMAIL_PATTERN)) {
                 message.setText("Not valid Email");
                 message.setTextFill(Color.RED);
-                isCorrectEmail.set(false);
             } else {
                 message.setText("");
             }
         });
-        return isCorrectEmail;
     }
     // Regex for checking if password contains requirements 2 digits,
     // 2 lowercase, 2 uppercase, 1 special char and is atleast 8 chars in length
 
     public boolean isPassWordValid() {
-        final String PASSWORD_PATTERN = "(?=^.{8}$)(?=(.*\\d){2})(?=.*[a-z].*[a-z])(?=.*[A-Z].*[A-Z])(?=.*[!@#$%^&+=])(?!.*[\\s])^.*";
+        final String PASSWORD_PATTERN = "(?=^.{8}$)(?=(.*\\d){2})(?=(.*[a-z]){2})(?=(.*[A-Z]){2})(?=.*[!@#$%^&+=])(?!.*[\\s])^.*";
         Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
         Matcher matcher = pattern.matcher(passWord.getText());
         return matcher.matches();
@@ -63,15 +60,12 @@ public class Controller implements Initializable {
     public void loginValidation() {
 
         submit.setOnAction(e -> {
-            // Doing a simple System.out just to show true/false
-            System.out.println(isEmailValidSecond());
-
             if (passWord.getText() != null && email.getText() != null) {
-                if (isPassWordValid() && isEmailValid().get()) {
+                if (isPassWordValid() && isEmailReallyValid()) {
                     message.setText("Login Successful!");
                     message.setTextFill(Color.GREEN);
                 } else {
-                    message.setText("Not valid Password");
+                    message.setText("Not valid Password or Email");
                     message.setTextFill(Color.RED);
                 }
             }
@@ -79,7 +73,7 @@ public class Controller implements Initializable {
     }
 
     // Second way to check if email is valid by using commons-validator dependency. jar_files.zip contains needed files
-    public boolean isEmailValidSecond() {
+    public boolean isEmailReallyValid() {
         return EmailValidator.getInstance(true).isValid(email.getText());
     }
 }
